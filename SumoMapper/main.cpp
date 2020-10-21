@@ -2,6 +2,8 @@
 #include <math.h>
 #include <stdio.h>
 #include <Windows.h>
+#include <stdlib.h>
+#include <time.h>
 
 
 class Player {
@@ -60,6 +62,10 @@ bool checkIfInsideArena(double x, double y, double r, double h, double k) {
 
 int main()
 {
+    //Initialise random
+    srand(time(NULL));
+
+    int frame;
 
     //Set radius and offset (r, h, k)
     double radius = 38;
@@ -73,7 +79,7 @@ int main()
     Player self(50, 50, 270);
 
     //Create fake detection
-    Detection enemy(10.52, 90);
+    Detection enemy(rand() % 61, rand() % 361);
 
     while (true) {
 
@@ -90,9 +96,6 @@ int main()
             plane[x][circle(x, radius, h, k, -1)] = true;
         }
 
-        //Calculate x and y of detection
-
-
         //Check if the detected object is inside the arena
         if (!checkIfInsideArena(enemy.x(self.x, self.direction), enemy.y(self.y, self.direction), radius, h, k)) {
             plane[(int)enemy.x(self.x, self.direction)][(int)enemy.y(self.y, self.direction)] = true;
@@ -101,7 +104,7 @@ int main()
 
 
         //Draw the player, and draw a circle around the player
-        plane[(int)self.x][(int)self.y] = true;
+        //plane[(int)self.x][(int)self.y] = true;
 
         for (int x = 0; x < 100; x++) {
             plane[x][circle(x, 8, self.x, self.y, 1)] = true;
@@ -113,8 +116,9 @@ int main()
 
         //Print state of plane to console
         system("cls");
-        std::cout << self.x << ", " << self.y;
+        std::cout << "frame: " << frame << " coordinates: " << self.x << ", " << self.y;
         printToConsole(plane);
+        frame++;
     }
     return 0;
 }

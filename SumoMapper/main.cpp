@@ -1,39 +1,21 @@
-#include <iostream>
+/*
+This code is meant to be both a practical implementation and digital representation of the robot sumo arena.
+*/
+
+//These libraries are needed for the script to function
 #include <math.h>
 #include <stdio.h>
-#include <Windows.h>
 #include <stdlib.h>
 #include <time.h>
 
+//Remove these for arduino
+#include <iostream>
 
-class Player {
-    public:
-        double x, y, direction;
-        Player(double, double, double);
-        double rad () {return (direction) * (M_PI/180);};
-};
+//Le classes
+#include <classy.h>
 
-Player::Player (double a, double b, double c) {
-    x = a;
-    y = b;
-    direction = c;
-}
 
-class Detection {
-public:
-    double distance, direction;
-    Detection(double, double);
-    double absDir (double oDir) {return direction + oDir;};
-    double x (double playerOffsetX = 0, double oDir = 0) {return (distance * cos((direction + oDir) * (M_PI/180))) + playerOffsetX;};
-    double y (double playerOffsetY = 0, double oDir = 0) {return (distance * sin((direction + oDir) * (M_PI/180))) + playerOffsetY;};
-
-};
-
-Detection::Detection (double a, double b) {
-        distance = a;
-        direction = b;
-}
-
+//This function prints the current state of the plane to the console, unnessasary in arduino as it is only for human interface
 void printToConsole(bool plane[100][100]) {
     for(size_t y = 0; y < 100; y++) {
         for(size_t x = 0; x < 100; x++) {
@@ -47,6 +29,7 @@ void printToConsole(bool plane[100][100]) {
     }
 }
 
+//This function draws a circle, it is also unnessasary in arduino
 int circle(int x, double r, double h, double k, int mod) {
     int newY = (int)(k + mod * sqrt(pow(r, 2) - pow(x - h, 2)) + 0.5 * mod);
     if (newY != -2147483648) {
@@ -56,16 +39,15 @@ int circle(int x, double r, double h, double k, int mod) {
     }
 }
 
+//This function simply checks if a point with coordinates (x,y) falls inside a circle with radius r and a centre at (h,k)
 bool checkIfInsideArena(double x, double y, double r, double h, double k) {
-    return (pow(x - h, 2) + pow(y - k, 2) > pow(r, 2));
+    return (pow(x - h, 2) + pow(y - k, 2) < pow(r, 2));
 }
 
 int main()
 {
-    //Initialise random
+    //Initialise rng
     srand(time(NULL));
-
-    int frame;
 
     //Set radius and offset (r, h, k)
     double radius = 38;
@@ -79,7 +61,7 @@ int main()
     Player self(50, 50, 270);
 
     //Create fake detection
-    Detection enemy(rand() % 61, rand() % 361);
+    Detection enemy(rand() % 31, rand() % 361);
 
     while (true) {
 
@@ -97,11 +79,9 @@ int main()
         }
 
         //Check if the detected object is inside the arena
-        if (!checkIfInsideArena(enemy.x(self.x, self.direction), enemy.y(self.y, self.direction), radius, h, k)) {
+        if (checkIfInsideArena(enemy.x(self.x, self.direction), enemy.y(self.y, self.direction), radius, h, k)) {
             plane[(int)enemy.x(self.x, self.direction)][(int)enemy.y(self.y, self.direction)] = true;
         }
-
-
 
         //Draw the player, and draw a circle around the player
         //plane[(int)self.x][(int)self.y] = true;
@@ -110,15 +90,14 @@ int main()
             plane[x][circle(x, 8, self.x, self.y, 1)] = true;
             plane[x][circle(x, 8, self.x, self.y, -1)] = true;
         }
-        //plane[(int)(self.x+3*cos(self.rad()))][(int)(self.x+3*sin(self.rad()))] = true;
+
         self.x = self.x + 3*cos(self.rad());
         self.y = self.y + 3*sin(self.rad());
 
         //Print state of plane to console
         system("cls");
-        std::cout << "frame: " << frame << " coordinates: " << self.x << ", " << self.y;
+        std::cout << "coordinates: " << self.x << ", " << self.y;
         printToConsole(plane);
-        frame++;
     }
     return 0;
 }

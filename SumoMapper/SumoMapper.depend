@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1603193899 source:e:\projects\cb\sumomapper\main.cpp
+	<iostream>
+	<math.h>
+	<stdio.h>
+	<Windows.h>
+

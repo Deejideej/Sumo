@@ -44,14 +44,17 @@ void Detection::SetValues (double a, double b) {
 //This function prints the current state of the plane to the console, unnessasary in arduino as it is only for human interface
 void printToConsole(bool plane[100][100]) {
     for(size_t y = 0; y < 100; y++) {
+        char line[200];
         for(size_t x = 0; x < 100; x++) {
             if(plane[x][y]) {
-                std::cout << "00";
+                line[x * 2] = '0';
+                line[x * 2 - 1] = '0';
             } else {
-                std::cout << "  ";
+                line[x * 2] = ' ';
+                line[x * 2 - 1] = ' ';
             }
         }
-        std::cout << std::endl;
+        std::cout << line << std::endl;
     }
 }
 

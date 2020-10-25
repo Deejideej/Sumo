@@ -22,7 +22,7 @@ int main()
     bool plane[100][100] = { {false} };
 
     //Initialise player
-    Player self(50, 50, 270);
+    Player self(50, 50, 12);
 
     //Create fake detection - testing only
     //Detection enemy(rand() % 31, rand() % 361);
